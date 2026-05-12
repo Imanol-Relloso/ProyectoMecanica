@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb.AddForce((new Vector3(moveDir.x, 0, moveDir.y)) * speed);
+        Vector3 move = transform.forward * moveDir.y + transform.right * moveDir.x;
+        rb.AddForce(move * speed);
     }
 }
