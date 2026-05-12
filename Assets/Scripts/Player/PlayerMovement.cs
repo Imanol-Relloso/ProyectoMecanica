@@ -28,11 +28,6 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         Vector3 move = transform.forward * moveDir.y + transform.right * moveDir.x;
-        float currentSpeed = sprint ? sprintSpeed : speed;
-
-        Vector3 velocity = move * currentSpeed;
-        velocity.y = rb.linearVelocity.y; 
-
-        rb.linearVelocity = velocity;
+        rb.AddForce(move * (sprint ? sprintSpeed : speed));
     }
 }
