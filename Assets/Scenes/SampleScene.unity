@@ -691,7 +691,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumpForce: 10
   wallJumpForceX: 5
-  wallJumpForceY: 5
+  wallJumpForceY: 7
   slipForce: 100
 --- !u!114 &480261465
 MonoBehaviour:

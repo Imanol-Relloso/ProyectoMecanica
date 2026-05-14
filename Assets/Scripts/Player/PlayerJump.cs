@@ -20,16 +20,20 @@ public class PlayerJump : MonoBehaviour
     private bool onCollision;
     private Vector3 interpolateWallNormal;
 
-    private Dictionary<GameObject, Collision> collisions;
+    private Dictionary<GameObject, Vector3> collisions;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        collisions = new Dictionary<GameObject, Collision>();
+        collisions = new Dictionary<GameObject, Vector3>();
     }
     private void FixedUpdate()
     {
         if(onWall)
             Slip();
+    }
+    private void Update()
+    {
+        CalculateCollision();
     }
     private void Slip()
     {
@@ -40,46 +44,33 @@ public class PlayerJump : MonoBehaviour
         if (onCollision)
         {
             if (!onWall)
-            {
                 rb.AddForce(jumpForce * transform.up, ForceMode.Impulse);
-            }
+
             else
-            {
-                rb.AddForce((interpolateWallNormal.normalized * wallJumpForceX) + (transform.up * wallJumpForceY), ForceMode.Impulse);
-            }
+                rb.AddForce((interpolateWallNormal.normalized + transform.up * wallJumpForceY) * wallJumpForceX, ForceMode.Impulse);
         }
     }
-
-    private void Update()
-    {
-        CalculateCollision();
-    }
-
     private void CalculateCollision()
     {
         if (!onCollision) return;
 
         interpolateWallNormal = Vector3.zero;
 
-        foreach(KeyValuePair<GameObject, Collision> key in collisions)
+        foreach(KeyValuePair<GameObject, Vector3> key in collisions)
         {
-            Vector3 temp = Vector3.zero;
-            foreach (ContactPoint point in key.Value.contacts)
-            {
-                temp += point.normal;
-            }
-            Debug.Log(temp.normalized);
-            interpolateWallNormal += temp.normalized;
+            Vector3 temp = key.Value;
+            
+            interpolateWallNormal += temp;
         }
 
         float colAngle = Vector3.Angle(interpolateWallNormal.normalized, transform.up);
-        Debug.Log(colAngle);
 
         onWall = (colAngle > 60.0f && colAngle < 120f) ? true : false;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        onCollision = true;
         OnCollision(collision);
     }
     private void OnCollisionStay(Collision collision)
@@ -89,18 +80,18 @@ public class PlayerJump : MonoBehaviour
     private void OnCollisionExit(Collision collision)
     {
         collisions.Remove(collision.gameObject);
-        onCollision = false;
+        if(collisions.Count <= 0)
+            onCollision = false;
     }
 
     private void OnCollision(Collision coll)
     {
-        if (collisions.ContainsKey(coll.gameObject))
+        Vector3 temp = Vector3.zero;
+        foreach (ContactPoint point in coll.contacts)
         {
-            onCollision = true;
-            return;
+            temp += point.normal;
         }
-
-        collisions[coll.gameObject] = coll;
+        collisions[coll.gameObject] = temp.normalized;
     }
 
     private void OnDrawGizmos()
