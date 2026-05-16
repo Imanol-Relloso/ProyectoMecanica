@@ -417,7 +417,7 @@ MonoBehaviour:
   sprintSpeed: 60
   crouchSpeed: 20
   slideForce: 50
-  slideDuration: 5
+  slideDuration: 10
   crouch: 0
   sliding: 0
   crouchHeight: 1
