@@ -10,24 +10,29 @@ public class PlayerJump : MonoBehaviour
     private Rigidbody rb;
     private PlayerInputActions input;
 
+    [Header("Normal Jump")]
     [SerializeField]
     private float jumpForce;
+    [Header("Wall Jump")]
     [SerializeField]
     private float wallJumpForceX;
     [SerializeField]
     private float wallJumpForceY;
+    [Header("Wall Slip")]
     [SerializeField]
     private float slipForce;
 
     private bool onWall;
     private bool onCollision;
     private Vector3 interpolateWallNormal;
-
     private Dictionary<GameObject, Vector3> collisions;
+
+    private CameraController camera;
 
     private void Awake()
     {
         input = new PlayerInputActions();
+        camera = GetComponent<CameraController>();
     }
 
     private void OnEnable()
@@ -68,9 +73,12 @@ public class PlayerJump : MonoBehaviour
         {
             if (!onWall)
                 rb.AddForce(jumpForce * transform.up, ForceMode.Impulse);
-
             else
-                rb.AddForce((interpolateWallNormal.normalized + transform.up * wallJumpForceY) * wallJumpForceX, ForceMode.Impulse);
+            {
+                rb.AddForce((interpolateWallNormal.normalized * wallJumpForceX + transform.up * wallJumpForceY) , ForceMode.Impulse);
+             
+                camera.LookAt(interpolateWallNormal.normalized);
+            }
         }
     }
     private void CalculateCollision()

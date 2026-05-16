@@ -416,6 +416,7 @@ MonoBehaviour:
   normalSpeed: 40
   damping: 2
   sprintSpeed: 50
+  crounchSlow: 0
 --- !u!114 &480261457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -690,9 +691,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumpForce: 20
-  wallJumpForceX: 10
-  wallJumpForceY: 5
-  slipForce: 100
+  wallJumpForceX: 22.5
+  wallJumpForceY: 45
+  slipForce: 50
 --- !u!114 &480261465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -706,7 +707,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraTransform: {fileID: 330585546}
-  mouseSensibility: 50
+  mouseSensibility: 20
+  rotationSpeed: 10
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0

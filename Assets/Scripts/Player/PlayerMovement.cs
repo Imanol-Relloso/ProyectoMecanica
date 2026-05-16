@@ -19,7 +19,10 @@ public class PlayerMovement : MonoBehaviour
     private float sprintSpeed;
     private bool sprint;
 
-
+    [Header("Crounch")]
+    [SerializeField]
+    private float crounchSlow;
+    private bool crounch;
 
     private void Awake()
     {
@@ -36,6 +39,8 @@ public class PlayerMovement : MonoBehaviour
         input.Player.Sprint.performed += OnSprint;
         input.Player.Sprint.canceled += OnSprint;
 
+        input.Player.Crouch.performed += OnCrouch;
+        input.Player.Crouch.canceled += OnCrouch;
     }
 
     private void OnDisable()
@@ -46,6 +51,8 @@ public class PlayerMovement : MonoBehaviour
         input.Player.Sprint.performed -= OnSprint;
         input.Player.Sprint.canceled -= OnSprint;
 
+        input.Player.Crouch.performed -= OnCrouch;
+        input.Player.Crouch.canceled -= OnCrouch;
 
         input.Player.Disable();
     }
@@ -63,7 +70,10 @@ public class PlayerMovement : MonoBehaviour
     {
         sprint = context.ReadValueAsButton();
     }
-
+    public void OnCrouch(InputAction.CallbackContext context)
+    {
+        crounch = context.ReadValueAsButton();
+    }
 
     private void Update()
     {
