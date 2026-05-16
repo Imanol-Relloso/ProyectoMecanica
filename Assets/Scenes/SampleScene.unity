@@ -413,9 +413,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63959e5a8e773094fa640054d46c1014, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalSpeed: 40
-  sprintSpeed: 50
-  crouchSpeed: 30
+  normalSpeed: 30
+  sprintSpeed: 60
+  crouchSpeed: 20
   slideForce: 50
   slideDuration: 5
   crouch: 0
@@ -694,9 +694,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 518a4358f265919468c32dee43a12620, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpForce: 20
-  wallJumpForceX: 22.5
-  wallJumpForceY: 45
+  jumpForce: 15
+  wallJumpForceX: 20
+  wallJumpForceY: 30
   slipForce: 50
 --- !u!114 &480261465
 MonoBehaviour:
@@ -712,7 +712,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraTransform: {fileID: 330585546}
   mouseSensibility: 20
-  rotationSpeed: 10
+  gamepadSensibility: 200
+  rotationSpeed: 20
   crouchHeight: -0.25
   slideHeight: -0.4
   heightSmooth: 10

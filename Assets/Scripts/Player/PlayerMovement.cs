@@ -99,7 +99,7 @@ public class PlayerMovement : MonoBehaviour
 
         float currentSpeed = normalSpeed;
 
-        if (sliding)
+        if (sprint)
             currentSpeed = sprintSpeed; 
         else if (crouch)
             currentSpeed = crouchSpeed;

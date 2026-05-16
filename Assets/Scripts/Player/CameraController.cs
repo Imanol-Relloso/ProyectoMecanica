@@ -10,7 +10,10 @@ public class CameraController : MonoBehaviour
     private Transform cameraTransform;
 
     [SerializeField] 
-    private float mouseSensibility = 100f;
+    private float mouseSensibility;
+    [SerializeField] 
+    private float gamepadSensibility;
+    private bool usingGamepad;
 
     private Vector2 lookInput;
     private float cameraRot;
@@ -66,14 +69,18 @@ public class CameraController : MonoBehaviour
     public void OnLook(InputAction.CallbackContext context)
     {
         lookInput = context.ReadValue<Vector2>();
+
+        usingGamepad = context.control.device is UnityEngine.InputSystem.Gamepad;
     }
 
     private void MouseLook()
     {
         if(isRotating) return;
 
-        float axisX = lookInput.x * Time.deltaTime * mouseSensibility;
-        float axisY = lookInput.y * Time.deltaTime * mouseSensibility;
+        float sensibility = usingGamepad ? gamepadSensibility : mouseSensibility;
+
+        float axisX = lookInput.x * Time.deltaTime * sensibility;
+        float axisY = lookInput.y * Time.deltaTime * sensibility;
 
         cameraRot -= axisY;
         cameraRot = Mathf.Clamp(cameraRot, -75f, 75f);

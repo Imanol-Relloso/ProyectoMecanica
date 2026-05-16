@@ -1,9 +1,6 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Windows;
 
 public class PlayerJump : MonoBehaviour
 {
@@ -27,12 +24,12 @@ public class PlayerJump : MonoBehaviour
     private Vector3 interpolateWallNormal;
     private Dictionary<GameObject, Vector3> collisions;
 
-    private CameraController camera;
+    private CameraController cam;
 
     private void Awake()
     {
         input = new PlayerInputActions();
-        camera = GetComponent<CameraController>();
+        cam = GetComponent<CameraController>();
     }
 
     private void OnEnable()
@@ -58,6 +55,11 @@ public class PlayerJump : MonoBehaviour
     {
         if(onWall)
             Slip();
+
+        rb.linearDamping = 2.0f;
+
+        if (!onCollision)
+            rb.linearDamping = 0.0f;
     }
     private void Update()
     {
@@ -67,6 +69,7 @@ public class PlayerJump : MonoBehaviour
     {
         rb.AddForce(-transform.up * slipForce);
     }
+
     public void OnJump(InputAction.CallbackContext context)
     {
         if (onCollision)
@@ -77,7 +80,7 @@ public class PlayerJump : MonoBehaviour
             {
                 rb.AddForce((interpolateWallNormal.normalized * wallJumpForceX + transform.up * wallJumpForceY) , ForceMode.Impulse);
              
-                camera.LookAt(interpolateWallNormal.normalized);
+                cam.LookAt(interpolateWallNormal.normalized);
             }
         }
     }
