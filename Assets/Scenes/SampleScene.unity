@@ -414,9 +414,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   normalSpeed: 40
-  damping: 2
   sprintSpeed: 50
-  crounchSlow: 0
+  crouchSpeed: 30
+  slideForce: 50
+  slideDuration: 5
+  crouch: 0
+  sliding: 0
+  crouchHeight: 1
 --- !u!114 &480261457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -568,7 +572,7 @@ Rigidbody:
   m_GameObject: {fileID: 480261455}
   serializedVersion: 4
   m_Mass: 2
-  m_Drag: 0
+  m_Drag: 2
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: -1, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -709,6 +713,9 @@ MonoBehaviour:
   cameraTransform: {fileID: 330585546}
   mouseSensibility: 20
   rotationSpeed: 10
+  crouchHeight: -0.25
+  slideHeight: -0.4
+  heightSmooth: 10
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0

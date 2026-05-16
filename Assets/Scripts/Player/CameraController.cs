@@ -20,6 +20,17 @@ public class CameraController : MonoBehaviour
     private bool isRotating;
     private Coroutine lookCoroutine;
 
+    private float standHeight;
+    [SerializeField] 
+    private float crouchHeight;
+    [SerializeField] 
+    private float slideHeight;
+
+    [SerializeField] 
+    private float heightSmooth = 10f;
+
+    private PlayerMovement playerMovement;
+
     private void Awake()
     {
         input = new PlayerInputActions();
@@ -42,11 +53,14 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        playerMovement = GetComponent<PlayerMovement>();
+        standHeight = cameraTransform.position.y;
     }
 
     private void Update()
     {
         MouseLook();
+        HandleCameraHeight();
     }
 
     public void OnLook(InputAction.CallbackContext context)
@@ -67,6 +81,21 @@ public class CameraController : MonoBehaviour
         cameraTransform.localRotation = Quaternion.Euler(cameraRot, 0f, 0f);
 
         transform.Rotate(Vector3.up * axisX);
+    }
+    private void HandleCameraHeight()
+    {
+        float targetHeight = standHeight;
+
+        if (playerMovement.sliding)
+            targetHeight = slideHeight;
+        else if (playerMovement.crouch)
+            targetHeight = crouchHeight;
+
+        Vector3 pos = cameraTransform.localPosition;
+
+        pos.y = Mathf.Lerp(pos.y, targetHeight, Time.deltaTime * heightSmooth);
+
+        cameraTransform.localPosition = pos;
     }
     public void LookAt(Vector3 direction)
     {

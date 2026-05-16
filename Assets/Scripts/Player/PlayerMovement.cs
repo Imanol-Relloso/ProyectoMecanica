@@ -10,8 +10,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement")]
     [SerializeField] 
     private float normalSpeed;
-    [SerializeField]
-    private float damping = 2.0f;
+
     private Vector2 moveDir;
 
     [Header("Sprint")]
@@ -19,10 +18,19 @@ public class PlayerMovement : MonoBehaviour
     private float sprintSpeed;
     private bool sprint;
 
-    [Header("Crounch")]
-    [SerializeField]
-    private float crounchSlow;
-    private bool crounch;
+    [Header("Crouch / Slide")]
+    [SerializeField] private float crouchSpeed;
+    [SerializeField] private float slideForce;
+    [SerializeField] private float slideDuration;
+
+    public bool crouch;
+    public bool sliding;
+    private float slideTimer;
+
+    private CapsuleCollider capsule;
+
+    private float standHeight;
+    [SerializeField] private float crouchHeight = 1f;
 
     private void Awake()
     {
@@ -59,8 +67,9 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        capsule = GetComponent<CapsuleCollider>();
 
-        rb.linearDamping = damping;
+        standHeight = capsule.height;
     }
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -72,17 +81,31 @@ public class PlayerMovement : MonoBehaviour
     }
     public void OnCrouch(InputAction.CallbackContext context)
     {
-        crounch = context.ReadValueAsButton();
+        crouch = context.ReadValueAsButton();
+
+        if (context.performed)
+            TryStartSlide();
     }
 
     private void Update()
     {
         SpeedControl();
+        HandleCrouch();
+        HandleSlide();
     }
     private void FixedUpdate()
     {
+        if (sliding) return;
+
+        float currentSpeed = normalSpeed;
+
+        if (sliding)
+            currentSpeed = sprintSpeed; 
+        else if (crouch)
+            currentSpeed = crouchSpeed;
+
         Vector3 move = transform.forward * moveDir.y + transform.right * moveDir.x;
-        rb.AddForce(move * (sprint ? sprintSpeed : normalSpeed));
+        rb.AddForce(move * currentSpeed);
     }
 
     private void SpeedControl()
@@ -94,6 +117,53 @@ public class PlayerMovement : MonoBehaviour
         {
             Vector3 limitedVel = flatVel.normalized * speed;
             rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
+        }
+    }
+    private void TryStartSlide()
+    {
+        if (sprint && moveDir.magnitude > 0.1f && !sliding)
+        {
+            sliding = true;
+            slideTimer = slideDuration;
+
+            Vector3 slideDir = transform.forward;
+
+            rb.AddForce(slideDir * slideForce, ForceMode.Impulse);
+        }
+    }
+
+    private void HandleCrouch()
+    {
+        if (sliding) return; 
+
+        float targetHeight = crouch ? crouchHeight : standHeight;
+
+        capsule.height = Mathf.Lerp(capsule.height, targetHeight, Time.deltaTime * 10f);
+
+        Vector3 center = capsule.center;
+        center.y = capsule.height / 2f - 1f;
+        capsule.center = center;
+    }
+    private void HandleSlide()
+    {
+        if (!sliding) return;
+
+        slideTimer -= Time.deltaTime;
+
+        Vector3 vel = rb.linearVelocity;
+        Vector3 flatVel = new Vector3(vel.x, 0f, vel.z);
+
+        rb.linearVelocity = new Vector3(flatVel.x, vel.y, flatVel.z);
+
+        if (!crouch)
+        {
+            sliding = false;
+            return;
+        }
+
+        if (slideTimer <= 0f)
+        {
+            sliding = false;
         }
     }
 }
