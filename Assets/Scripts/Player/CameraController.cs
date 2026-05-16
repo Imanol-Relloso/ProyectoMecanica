@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
+    private PlayerInputActions input;
+
     [SerializeField] 
     private Transform cameraTransform;
 
@@ -11,6 +13,25 @@ public class CameraController : MonoBehaviour
 
     private Vector2 lookInput;
     private float cameraRot;
+
+    private void Awake()
+    {
+        input = new PlayerInputActions();
+    }
+    private void OnEnable()
+    {
+        input.Player.Enable();
+
+        input.Player.Look.performed += OnLook;
+        input.Player.Look.canceled += OnLook;
+    }
+    private void OnDisable()
+    {
+        input.Player.Look.performed -= OnLook;
+        input.Player.Look.canceled -= OnLook;
+
+        input.Player.Disable();
+    }
 
     private void Start()
     {

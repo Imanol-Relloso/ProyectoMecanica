@@ -1,11 +1,14 @@
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections.Generic;
+using UnityEngine.Windows;
 
 public class PlayerJump : MonoBehaviour
 {
     private Rigidbody rb;
+    private PlayerInputActions input;
 
     [SerializeField]
     private float jumpForce;
@@ -21,6 +24,26 @@ public class PlayerJump : MonoBehaviour
     private Vector3 interpolateWallNormal;
 
     private Dictionary<GameObject, Vector3> collisions;
+
+    private void Awake()
+    {
+        input = new PlayerInputActions();
+    }
+
+    private void OnEnable()
+    {
+        input.Player.Enable();
+
+        input.Player.Jump.performed += OnJump;
+        input.Player.Jump.canceled += OnJump;
+    }
+    private void OnDisable()
+    {
+        input.Player.Jump.performed -= OnJump;
+        input.Player.Jump.canceled -= OnJump;
+
+        input.Player.Disable();
+    }
     private void Start()
     {
         rb = GetComponent<Rigidbody>();

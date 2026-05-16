@@ -414,8 +414,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   normalSpeed: 40
-  sprintSpeed: 50
   damping: 2
+  sprintSpeed: 50
 --- !u!114 &480261457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -429,7 +429,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  m_NotificationBehavior: 2
+  m_NotificationBehavior: 3
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -689,9 +689,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 518a4358f265919468c32dee43a12620, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpForce: 10
-  wallJumpForceX: 5
-  wallJumpForceY: 7
+  jumpForce: 20
+  wallJumpForceX: 10
+  wallJumpForceY: 5
   slipForce: 100
 --- !u!114 &480261465
 MonoBehaviour:
