@@ -36,6 +36,19 @@ public class PlayerMovement : MonoBehaviour
 
     private PlayerJump playerJump;
 
+    /*
+    [Header("Ceiling Check")]
+    [SerializeField] 
+    private Transform ceilingCheck;
+    [SerializeField] 
+    private float ceilingDistance;
+    [SerializeField] 
+    private LayerMask playerMask;
+
+    private bool blockedAbove;
+    */
+    
+
     private void Awake()
     {
         input = new PlayerInputActions();
@@ -94,6 +107,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        //blockedAbove = Physics.Raycast(ceilingCheck.position, ceilingCheck.up, ceilingDistance, ~playerMask);
+
         SpeedControl();
         HandleCrouch();
         HandleSlide();
@@ -119,7 +134,15 @@ public class PlayerMovement : MonoBehaviour
     private void SpeedControl()
     {
         Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-        float speed = sprint ? sprintSpeed : normalSpeed;
+        float speed = normalSpeed;
+        
+        if (sprint)
+            speed = sprintSpeed;
+        else if (crouch)
+            speed = crouchSpeed;
+
+        if (!playerJump.Grounded)
+            speed *= airMultiplier;
 
         if (flatVel.magnitude > speed)
         {
@@ -142,9 +165,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleCrouch()
     {
-        if (sliding) return; 
+        bool shouldBeCrouched = crouch || sliding /*|| blockedAbove*/;
 
-        float targetHeight = crouch ? crouchHeight : standHeight;
+        float targetHeight = shouldBeCrouched ? crouchHeight : standHeight;
 
         capsule.height = Mathf.Lerp(capsule.height, targetHeight, Time.deltaTime * 10f);
 
@@ -157,11 +180,6 @@ public class PlayerMovement : MonoBehaviour
         if (!sliding) return;
 
         slideTimer -= Time.deltaTime;
-
-        Vector3 vel = rb.linearVelocity;
-        Vector3 flatVel = new Vector3(vel.x, 0f, vel.z);
-
-        rb.linearVelocity = new Vector3(flatVel.x, vel.y, flatVel.z);
 
         if (!crouch)
         {
