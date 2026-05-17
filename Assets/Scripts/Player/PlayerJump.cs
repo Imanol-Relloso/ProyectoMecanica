@@ -26,6 +26,8 @@ public class PlayerJump : MonoBehaviour
 
     private CameraController cam;
 
+    public bool Grounded => onCollision && !onWall;
+
     private void Awake()
     {
         input = new PlayerInputActions();

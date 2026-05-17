@@ -10,6 +10,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement")]
     [SerializeField] 
     private float normalSpeed;
+    [SerializeField]
+    private float airMultiplier = 0.2f;
 
     private Vector2 moveDir;
 
@@ -31,6 +33,8 @@ public class PlayerMovement : MonoBehaviour
 
     private float standHeight;
     [SerializeField] private float crouchHeight = 1f;
+
+    private PlayerJump playerJump;
 
     private void Awake()
     {
@@ -68,6 +72,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         capsule = GetComponent<CapsuleCollider>();
+        playerJump = GetComponent<PlayerJump>();
 
         standHeight = capsule.height;
     }
@@ -104,6 +109,9 @@ public class PlayerMovement : MonoBehaviour
         else if (crouch)
             currentSpeed = crouchSpeed;
 
+        if (!playerJump.Grounded)
+            currentSpeed *= airMultiplier;
+
         Vector3 move = transform.forward * moveDir.y + transform.right * moveDir.x;
         rb.AddForce(move * currentSpeed);
     }
@@ -121,7 +129,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void TryStartSlide()
     {
-        if (sprint && moveDir.magnitude > 0.1f && !sliding)
+        if (sprint && moveDir.magnitude > 0.1f && !sliding && playerJump.Grounded)
         {
             sliding = true;
             slideTimer = slideDuration;
