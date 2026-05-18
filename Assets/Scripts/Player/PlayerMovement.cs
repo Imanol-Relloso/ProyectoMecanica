@@ -36,18 +36,14 @@ public class PlayerMovement : MonoBehaviour
 
     private PlayerJump playerJump;
 
-    /*
+    
     [Header("Ceiling Check")]
-    [SerializeField] 
-    private Transform ceilingCheck;
     [SerializeField] 
     private float ceilingDistance;
     [SerializeField] 
-    private LayerMask playerMask;
-
-    private bool blockedAbove;
-    */
-    
+    private float ceilingCheckRadius;
+    [SerializeField] 
+    private LayerMask groundMask;
 
     private void Awake()
     {
@@ -107,8 +103,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        //blockedAbove = Physics.Raycast(ceilingCheck.position, ceilingCheck.up, ceilingDistance, ~playerMask);
-
         SpeedControl();
         HandleCrouch();
         HandleSlide();
@@ -165,7 +159,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleCrouch()
     {
-        bool shouldBeCrouched = crouch || sliding /*|| blockedAbove*/;
+        bool shouldBeCrouched = crouch || sliding;
+
+        if (!shouldBeCrouched && !CanStandUp()) shouldBeCrouched = true;
 
         float targetHeight = shouldBeCrouched ? crouchHeight : standHeight;
 
@@ -174,6 +170,13 @@ public class PlayerMovement : MonoBehaviour
         Vector3 center = capsule.center;
         center.y = capsule.height / 2f - 1f;
         capsule.center = center;
+    }
+    public bool CanStandUp()
+    {
+        Vector3 bottom = transform.position + Vector3.up * 0.1f;
+        Vector3 top = transform.position + Vector3.up * standHeight;
+
+        return !Physics.CheckCapsule(bottom, top, ceilingCheckRadius, groundMask);
     }
     private void HandleSlide()
     {

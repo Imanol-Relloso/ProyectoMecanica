@@ -95,7 +95,7 @@ public class CameraController : MonoBehaviour
 
         if (playerMovement.sliding)
             targetHeight = slideHeight;
-        else if (playerMovement.crouch)
+        else if (playerMovement.crouch || !playerMovement.CanStandUp())
             targetHeight = crouchHeight;
 
         Vector3 pos = cameraTransform.localPosition;
