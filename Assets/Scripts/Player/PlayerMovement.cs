@@ -113,10 +113,11 @@ public class PlayerMovement : MonoBehaviour
 
         float currentSpeed = normalSpeed;
 
-        if (sprint)
-            currentSpeed = sprintSpeed; 
-        else if (crouch)
+        if (crouch || !CanStandUp())
             currentSpeed = crouchSpeed;
+        else if (sprint)
+            currentSpeed = sprintSpeed; 
+
 
         if (!playerJump.Grounded)
             currentSpeed *= airMultiplier;
@@ -183,12 +184,6 @@ public class PlayerMovement : MonoBehaviour
         if (!sliding) return;
 
         slideTimer -= Time.deltaTime;
-
-        if (!crouch)
-        {
-            sliding = false;
-            return;
-        }
 
         if (slideTimer <= 0f)
         {

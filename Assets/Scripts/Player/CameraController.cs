@@ -57,7 +57,7 @@ public class CameraController : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         playerMovement = GetComponent<PlayerMovement>();
-        standHeight = cameraTransform.position.y;
+        standHeight = cameraTransform.position.y - playerMovement.transform.position.y;
     }
 
     private void Update()
