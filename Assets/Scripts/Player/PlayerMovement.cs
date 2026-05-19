@@ -147,7 +147,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void TryStartSlide()
     {
-        if (sprint && moveDir.magnitude > 0.1f && !sliding && playerJump.Grounded)
+        if (sprint && moveDir.magnitude > 0.1f && !sliding && CanStandUp() && playerJump.Grounded)
         {
             sliding = true;
             slideTimer = slideDuration;
